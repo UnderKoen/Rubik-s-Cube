@@ -262,7 +262,7 @@ public class Cube {
 		Hrow = 0;
 		for (int i = 0; i != 6; i++) {
 			if (view.getView(Direction.UP).getId() == View.getView(i).getId()) {
-				for (int i2 = 0; i2 != 9; i2++) {
+				for (int i2 = 8; i2 != -1; i2--) {
 					Color color = ids2.get(view.getView(Direction.UP)).get(i2);
 					Image image = new Image (Main.class.getResource("/Tiles/TopEdge/TopEdge_Tile_" + color + ".png").toString());
 					ImageView imageView = new ImageView(image);
@@ -294,26 +294,22 @@ public class Cube {
 		View viewNew = view.getView(dir);
 		switch (dir) {
 		case DOWN:
-			addRotation(View.LEFT, Direction.LEFT);
-			addRotation(View.RIGHT, Direction.LEFT);
-			addRotation(View.FRONT, Direction.LEFT);
-			addRotation(View.BACK, Direction.LEFT);
+			addRotation(view.getLeft(), Direction.LEFT);
+			addRotation(view.getRight(), Direction.LEFT);
 			break;
 		case LEFT:
-			addRotation(View.TOP, Direction.LEFT);
-			addRotation(View.BOTTOM, Direction.LEFT);
+			addRotation(view.getUp(), Direction.LEFT);
+			addRotation(view.getDown(), Direction.LEFT);
 			break;
 		case NONE:
 			break;
 		case RIGHT:
-			addRotation(View.TOP, Direction.RIGHT);
-			addRotation(View.BOTTOM, Direction.RIGHT);
+			addRotation(view.getUp(), Direction.RIGHT);
+			addRotation(view.getDown(), Direction.RIGHT);
 			break;
 		case UP:
-			addRotation(View.LEFT, Direction.RIGHT);
-			addRotation(View.RIGHT, Direction.RIGHT);
-			addRotation(View.FRONT, Direction.RIGHT);
-			addRotation(View.BACK, Direction.RIGHT);
+			addRotation(view.getLeft(), Direction.RIGHT);
+			addRotation(view.getRight(), Direction.RIGHT);
 			break;
 		}
 		view = viewNew;
