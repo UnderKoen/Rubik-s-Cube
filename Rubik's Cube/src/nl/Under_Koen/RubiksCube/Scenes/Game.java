@@ -18,13 +18,41 @@ public class Game {
         Scene main = new Scene(root,1000,560);
         root.setAlignment(Pos.TOP_LEFT);
         HomeMenu menu = new HomeMenu();
+        Cube cube = new Cube();
+        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (ke.getCode().equals(KeyCode.LEFT)) {
+                    cube.move(Direction.LEFT);
+                    show(root, 350, 100, cube);	
+                }
+                if (ke.getCode().equals(KeyCode.RIGHT)) {
+                	cube.move(Direction.RIGHT);
+                	show(root, 350, 100, cube);	
+                }
+                if (ke.getCode().equals(KeyCode.UP)) {
+                	cube.move(Direction.UP);
+                	show(root, 350, 100, cube);	
+                }
+                if (ke.getCode().equals(KeyCode.DOWN)) {
+                	cube.move(Direction.DOWN);
+                	show(root, 350, 100, cube);
+                }
+            }
+        });
         menu.addButton("Reset", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
             	Main.stage.setScene(gameScene());
             }
         });
-        menu.addButton("Options");
+        menu.addButton("Options", new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	wide = !wide;
+            	show(root, 350, 100, cube);
+            }
+        });
         menu.addButton("Quit", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -32,25 +60,17 @@ public class Game {
             }
         });
         menu.show(root);
-        Cube cube = new Cube();
-        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent ke) {
-                if (ke.getCode().equals(KeyCode.LEFT)) {
-                    cube.move(Direction.LEFT);
-                }
-                if (ke.getCode().equals(KeyCode.RIGHT)) {
-                	cube.move(Direction.RIGHT);
-                }
-                if (ke.getCode().equals(KeyCode.UP)) {
-                	cube.move(Direction.UP);
-                }
-                if (ke.getCode().equals(KeyCode.DOWN)) {
-                	cube.move(Direction.DOWN);
-                }
-            }
-        });
-        cube.show(root, 350, 100);
+        show(root, 350, 100, cube);	
 		return main;
 	}
+	
+	private static void show(StackPane root, int x, int y, Cube cube) {
+		if (wide) {
+			cube.showWide(root, x, y);
+		} else {
+			cube.showSmall(root, x, y);
+		}
+	}
+
+	private static boolean wide = true;
 }

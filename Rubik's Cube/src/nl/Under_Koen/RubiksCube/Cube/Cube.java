@@ -15,17 +15,10 @@ public class Cube {
 	private HashMap<View, Rotation> rotations = new HashMap<View, Rotation>();
 	//				Side, Upside
 	
-	private boolean debug = false;
-	
 	private View view = View.FRONT;
 	
 	public Cube() {
 		toDefault();
-	}
-	
-	public Cube(Rotation rot) {
-		debug = true;
-		toDefault(rot);
 	}
 	
 	public void toDefault() {
@@ -37,20 +30,6 @@ public class Cube {
 				colors.put(i2, color);
 			}
 			rotations.put(View.getView(i), Rotation.NORTH);
-			ids.put(View.getView(i), colors);
-			ids2.put(View.getView(i), colors);
-		}
-	}
-	
-	public void toDefault(Rotation rot) {
-		ids.clear();
-		for (int i = 0; i != 6; i++) {
-			HashMap<Integer, Color> colors = new HashMap<Integer, Color>();
-			for (int i2 = 0; i2 != 9; i2++) {
-				Color color = Color.getColor(i);
-				colors.put(i2, color);
-			}
-			rotations.put(View.getView(i), rot);
 			ids.put(View.getView(i), colors);
 			ids2.put(View.getView(i), colors);
 		}
@@ -217,15 +196,95 @@ public class Cube {
 		}
 	}
 	
-	private double defaultX = 0;
-	private double defaultY = 0;
-	private Pane defaultPane = null;
 	public Group cube = new Group();
 	
-	public void show(Pane pane, double x, double y) {
-		defaultX = x;
-		defaultY = y;
-		defaultPane = pane;
+	public void showSmall(Pane pane, double x, double y) {
+		pane.getChildren().remove(cube);
+		cube = new Group();
+		cube.setTranslateX(x);
+		cube.setTranslateY(y);
+		int Hrow = 0;
+		int Vrow = 0;
+		for (int i2 = 0; i2 != 9; i2++) {
+			Color color = ids2.get(view).get(i2);
+			Image image = new Image (Main.class.getResource("/Tiles/Default/Default_Tile_" + color + ".png").toString());
+			ImageView imageView = new ImageView(image);
+			imageView.setFitHeight(100);
+			imageView.setFitWidth(100);
+			
+			imageView.setTranslateX(x + 2 + (62 * Hrow));
+			imageView.setTranslateY(y + (62 * Vrow));
+			Hrow++;
+			if (Hrow >= 3) {
+				Hrow = 0;
+				Vrow++;
+			}
+			cube.getChildren().add(imageView);
+		}
+		Vrow = 0;
+		Hrow = 0;
+		for (int i = 0; i != 6; i++) {
+			if (view.getView(Direction.LEFT, this) == View.getView(i)) {
+				for (int i2 = 0; i2 != 9; i2++) {
+					Color color = ids2.get(view.getView(Direction.LEFT, this)).get(i2);
+					Image image = new Image (Main.class.getResource("/Tiles/LeftEdge/LeftEdge_Tile_" + color + ".png").toString());
+					ImageView imageView = new ImageView(image);
+					imageView.setFitHeight(100);
+					imageView.setFitWidth(100);
+					
+					imageView.setTranslateX(x-62 + (29 * Hrow));
+					imageView.setTranslateY(y-2 + (62 * Vrow));
+					if (Hrow == 0) {
+						imageView.setTranslateY(y-62 + (62 * Vrow));
+					}
+					
+					if (Hrow == 1) {
+						imageView.setTranslateY(y-32 + (62 * Vrow));
+					}
+					
+					Hrow++;
+					if (Hrow >= 3) {
+						Hrow = 0;
+						Vrow++;
+					}
+					cube.getChildren().add(imageView);
+				}
+			}
+		}
+		Vrow = 0;
+		Hrow = 0;
+		for (int i = 0; i != 6; i++) {
+			if (view.getView(Direction.UP, this).getId() == View.getView(i).getId()) {
+				for (int i2 = 0; i2 != 9; i2++) {
+					Color color = ids2.get(view.getView(Direction.UP, this)).get(i2);
+					Image image = new Image (Main.class.getResource("/Tiles/TopEdge/TopEdge_Tile_" + color + ".png").toString());
+					ImageView imageView = new ImageView(image);
+					imageView.setFitHeight(100);
+					imageView.setFitWidth(100);
+					
+					imageView.setTranslateX(x-2 + (64 * Hrow));
+					imageView.setTranslateY(y-64 + (29 * Vrow));
+					if (Vrow == 0) {
+						imageView.setTranslateX(x-59 + (64 * Hrow));
+					}
+					
+					if (Vrow == 1) {
+						imageView.setTranslateX(x-30 + (64 * Hrow));
+					}
+					
+					Hrow++;
+					if (Hrow >= 3) {
+						Hrow = 0;
+						Vrow++;
+					}
+					cube.getChildren().add(imageView);
+				}
+			}
+		}
+		pane.getChildren().add(cube);
+	}
+	
+	public void showWide(Pane pane, double x, double y) {
 		pane.getChildren().remove(cube);
 		cube = new Group();
 		cube.setTranslateX(x);
@@ -307,9 +366,6 @@ public class Cube {
 					cube.getChildren().add(imageView);
 				}
 			}
-		}
-		if (debug) {
-			cube.setRotate(180);
 		}
 		pane.getChildren().add(cube);
 	}
@@ -510,7 +566,6 @@ public class Cube {
 			}
 			break;
 		}
-		show(defaultPane, defaultX, defaultY);
 	}
 	
 	public static enum Color {
