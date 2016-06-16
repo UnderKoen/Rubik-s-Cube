@@ -2,7 +2,7 @@ package nl.Under_Koen.RubiksCube;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;
-import nl.Under_Koen.RubiksCube.Scenes.Home;
+import nl.Under_Koen.RubiksCube.Scenes.*;
 
 public class Main extends Application {
 	

@@ -2,6 +2,7 @@ package nl.Under_Koen.RubiksCube.Cube;
 
 import java.util.HashMap;
 
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -9,15 +10,22 @@ import nl.Under_Koen.RubiksCube.Main;
 
 public class Cube {
 
-	private static HashMap<View, HashMap<Integer, Color>> ids = new HashMap<View, HashMap<Integer, Color>>();
-	private static HashMap<View, HashMap<Integer, Color>> ids2 = new HashMap<View, HashMap<Integer, Color>>();
-	private static HashMap<View, Rotation> rotations = new HashMap<View, Rotation>();
+	private HashMap<View, HashMap<Integer, Color>> ids = new HashMap<View, HashMap<Integer, Color>>();
+	private HashMap<View, HashMap<Integer, Color>> ids2 = new HashMap<View, HashMap<Integer, Color>>();
+	private HashMap<View, Rotation> rotations = new HashMap<View, Rotation>();
 	//				Side, Upside
+	
+	private boolean debug = false;
 	
 	private View view = View.FRONT;
 	
 	public Cube() {
 		toDefault();
+	}
+	
+	public Cube(Rotation rot) {
+		debug = true;
+		toDefault(rot);
 	}
 	
 	public void toDefault() {
@@ -31,10 +39,36 @@ public class Cube {
 					if (i == 2) {
 						color = Color.GREEN;
 					}
+					if (i == 4) {
+						color = Color.BLUE;
+					}
 				}
 				colors.put(i2, color);
 			}
 			rotations.put(View.getView(i), Rotation.NORTH);
+			ids.put(View.getView(i), colors);
+			ids2.put(View.getView(i), colors);
+		}
+	}
+	
+	public void toDefault(Rotation rot) {
+		ids.clear();
+		for (int i = 0; i != 6; i++) {
+			HashMap<Integer, Color> colors = new HashMap<Integer, Color>();
+			for (int i2 = 0; i2 != 9; i2++) {
+				Color color = Color.getColor(i);
+				if (i2 == 8) {
+					color = Color.RED;
+					if (i == 2) {
+						color = Color.GREEN;
+					}
+					if (i == 4) {
+						color = Color.BLUE;
+					}
+				}
+				colors.put(i2, color);
+			}
+			rotations.put(View.getView(i), rot);
 			ids.put(View.getView(i), colors);
 			ids2.put(View.getView(i), colors);
 		}
@@ -156,7 +190,6 @@ public class Cube {
 		ids2.put(view, newIds);
 		rotations.remove(view);
 		rotations.put(view, rotation);
-		show(defaultPane, defaultX, defaultY);
 	}
 	
 	public void addRotation (View view, Direction rotation) {
@@ -205,11 +238,16 @@ public class Cube {
 	private double defaultX = 0;
 	private double defaultY = 0;
 	private Pane defaultPane = null;
+	public Group cube = new Group();
 	
 	public void show(Pane pane, double x, double y) {
 		defaultX = x;
 		defaultY = y;
 		defaultPane = pane;
+		pane.getChildren().remove(cube);
+		cube = new Group();
+		cube.setTranslateX(x);
+		cube.setTranslateY(y);
 		int Hrow = 0;
 		int Vrow = 0;
 		for (int i2 = 0; i2 != 9; i2++) {
@@ -226,14 +264,14 @@ public class Cube {
 				Hrow = 0;
 				Vrow++;
 			}
-			pane.getChildren().add(imageView);
+			cube.getChildren().add(imageView);
 		}
 		Vrow = 0;
 		Hrow = 0;
 		for (int i = 0; i != 6; i++) {
-			if (view.getView(Direction.LEFT) == View.getView(i)) {
+			if (view.getView(Direction.LEFT, this) == View.getView(i)) {
 				for (int i2 = 0; i2 != 9; i2++) {
-					Color color = ids2.get(view.getView(Direction.LEFT)).get(i2);
+					Color color = ids2.get(view.getView(Direction.LEFT, this)).get(i2);
 					Image image = new Image (Main.class.getResource("/Tiles/LeftEdge/LeftEdge_Tile_" + color + ".png").toString());
 					ImageView imageView = new ImageView(image);
 					imageView.setFitHeight(100);
@@ -254,16 +292,16 @@ public class Cube {
 						Hrow = 0;
 						Vrow++;
 					}
-					pane.getChildren().add(imageView);
+					cube.getChildren().add(imageView);
 				}
 			}
 		}
 		Vrow = 0;
 		Hrow = 0;
 		for (int i = 0; i != 6; i++) {
-			if (view.getView(Direction.UP).getId() == View.getView(i).getId()) {
-				for (int i2 = 8; i2 != -1; i2--) {
-					Color color = ids2.get(view.getView(Direction.UP)).get(i2);
+			if (view.getView(Direction.UP, this).getId() == View.getView(i).getId()) {
+				for (int i2 = 0; i2 != 9; i2++) {
+					Color color = ids2.get(view.getView(Direction.UP, this)).get(i2);
 					Image image = new Image (Main.class.getResource("/Tiles/TopEdge/TopEdge_Tile_" + color + ".png").toString());
 					ImageView imageView = new ImageView(image);
 					imageView.setFitHeight(100);
@@ -284,36 +322,175 @@ public class Cube {
 						Hrow = 0;
 						Vrow++;
 					}
-					pane.getChildren().add(imageView);
+					cube.getChildren().add(imageView);
 				}
 			}
 		}
+		if (debug) {
+			cube.setRotate(180);
+		}
+		pane.getChildren().add(cube);
 	}
 	
 	public void move (Direction dir) {
-		View viewNew = view.getView(dir);
-		switch (dir) {
-		case DOWN:
-			addRotation(view.getLeft(), Direction.LEFT);
-			addRotation(view.getRight(), Direction.LEFT);
+		view = view.getView(dir, this);
+		switch (view) {
+		case BACK:
+			switch (rotations.get(view)) {
+			case EAST:
+				break;
+			case NORTH:
+				rotate(View.BACK, Rotation.NORTH);
+				rotate(View.TOP, Rotation.SOUTH);
+				rotate(View.BOTTOM, Rotation.SOUTH);
+				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.RIGHT, Rotation.NORTH);
+				break;
+			case SOUTH:
+				rotate(View.BACK, Rotation.SOUTH);
+				rotate(View.TOP, Rotation.NORTH);
+				rotate(View.BOTTOM, Rotation.NORTH);
+				rotate(View.LEFT, Rotation.SOUTH);
+				rotate(View.RIGHT, Rotation.SOUTH);
+				break;
+			case WEST:
+				break;
+			}
+			break;
+		case BOTTOM:
+			switch (rotations.get(view)) {
+			case EAST:
+				rotate(View.FRONT, Rotation.EAST);
+				rotate(View.BOTTOM, Rotation.EAST);
+				rotate(View.BACK, Rotation.WEST);
+				rotate(View.LEFT, Rotation.EAST);
+				rotate(View.RIGHT, Rotation.NORTH);
+				break;
+			case NORTH:
+				rotate(View.FRONT, Rotation.NORTH);
+				rotate(View.BOTTOM, Rotation.NORTH);
+				rotate(View.BACK, Rotation.SOUTH);
+				rotate(View.LEFT, Rotation.EAST);
+				rotate(View.RIGHT, Rotation.WEST);
+				break;
+			case SOUTH:
+				rotate(View.FRONT, Rotation.SOUTH);
+				rotate(View.BOTTOM, Rotation.SOUTH);
+				rotate(View.BACK, Rotation.NORTH);
+				rotate(View.LEFT, Rotation.WEST);
+				rotate(View.RIGHT, Rotation.EAST);
+				break;
+			case WEST:
+				rotate(View.FRONT, Rotation.WEST);
+				rotate(View.BOTTOM, Rotation.WEST);
+				rotate(View.BACK, Rotation.EAST);
+				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.RIGHT, Rotation.EAST);
+				break;
+			}
+			break;
+		case FRONT:
+			switch (rotations.get(view)) {
+			case EAST:
+				break;
+			case NORTH:
+				rotate(View.FRONT, Rotation.NORTH);
+				rotate(View.TOP, Rotation.NORTH);
+				rotate(View.BOTTOM, Rotation.NORTH);
+				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.RIGHT, Rotation.NORTH);
+				break;
+			case SOUTH:
+				rotate(View.FRONT, Rotation.SOUTH);
+				rotate(View.TOP, Rotation.SOUTH);
+				rotate(View.BOTTOM, Rotation.SOUTH);
+				rotate(View.LEFT, Rotation.SOUTH);
+				rotate(View.RIGHT, Rotation.SOUTH);
+				break;
+			case WEST:
+				break;
+			}
 			break;
 		case LEFT:
-			addRotation(view.getUp(), Direction.LEFT);
-			addRotation(view.getDown(), Direction.LEFT);
-			break;
-		case NONE:
+			switch (rotations.get(view)) {
+			case EAST:
+				break;
+			case NORTH:
+				rotate(View.FRONT, Rotation.NORTH);
+				rotate(View.TOP, Rotation.EAST);
+				rotate(View.BOTTOM, Rotation.WEST);
+				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.BACK, Rotation.NORTH);
+				break;
+			case SOUTH:
+				rotate(View.FRONT, Rotation.SOUTH);
+				rotate(View.TOP, Rotation.WEST);
+				rotate(View.BOTTOM, Rotation.EAST);
+				rotate(View.LEFT, Rotation.SOUTH);
+				rotate(View.BACK, Rotation.SOUTH);
+				break;
+			case WEST:
+				break;
+			}
 			break;
 		case RIGHT:
-			addRotation(view.getUp(), Direction.RIGHT);
-			addRotation(view.getDown(), Direction.RIGHT);
+			switch (rotations.get(view)) {
+			case EAST:
+				break;
+			case NORTH:
+				rotate(View.FRONT, Rotation.NORTH);
+				rotate(View.TOP, Rotation.WEST);
+				rotate(View.BOTTOM, Rotation.EAST);
+				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.BACK, Rotation.NORTH);
+				break;
+			case SOUTH:
+				rotate(View.FRONT, Rotation.SOUTH);
+				rotate(View.TOP, Rotation.EAST);
+				rotate(View.BOTTOM, Rotation.WEST);
+				rotate(View.LEFT, Rotation.SOUTH);
+				rotate(View.BACK, Rotation.SOUTH);
+				break;
+			case WEST:
+				break;
+			}
 			break;
-		case UP:
-			addRotation(view.getLeft(), Direction.RIGHT);
-			addRotation(view.getRight(), Direction.RIGHT);
+		case TOP:
+			switch (rotations.get(view)) {
+			case EAST:
+				rotate(View.FRONT, Rotation.EAST);
+				rotate(View.TOP, Rotation.EAST);
+				rotate(View.BACK, Rotation.WEST);
+				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.RIGHT, Rotation.SOUTH);
+				break;
+			case NORTH:
+				rotate(View.FRONT, Rotation.NORTH);
+				rotate(View.TOP, Rotation.NORTH);
+				rotate(View.BACK, Rotation.SOUTH);
+				rotate(View.LEFT, Rotation.WEST);
+				rotate(View.RIGHT, Rotation.EAST);
+				break;
+			case SOUTH:
+				rotate(View.FRONT, Rotation.SOUTH);
+				rotate(View.TOP, Rotation.SOUTH);
+				rotate(View.BACK, Rotation.NORTH);
+				rotate(View.LEFT, Rotation.EAST);
+				rotate(View.RIGHT, Rotation.WEST);
+				break;
+			case WEST:
+				rotate(View.FRONT, Rotation.WEST);
+				rotate(View.TOP, Rotation.WEST);
+				rotate(View.BACK, Rotation.EAST);
+				rotate(View.LEFT, Rotation.SOUTH);
+				rotate(View.RIGHT, Rotation.NORTH);
+				break;
+			}
 			break;
 		}
-		view = viewNew;
-		//System.out.println(view + " -=- " + rotations.get(view));
+		
+		System.out.println("-=-");
+		System.out.println(view + " -=- " + rotations.get(view));
 		show(defaultPane, defaultX, defaultY);
 	}
 	
@@ -408,54 +585,54 @@ public class Cube {
 			}
 		}
 		
-		private View getDown () {
+		private View getDown (Cube cube) {
 			switch (this) {
 			case BACK:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return RIGHT;
 				case NORTH:
-					return BOTTOM; //DID
+					return BOTTOM; 
 				case SOUTH:
-					return TOP;  //DID
+					return TOP;  
 				case WEST:
 					return LEFT;
 				}
 			case BOTTOM:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
-					return RIGHT; //DID
+					return LEFT; 
 				case NORTH:
-					return BACK;  //DID
+					return BACK;  
 				case SOUTH:
-					return FRONT; //DID
+					return FRONT; 
 				case WEST:
-					return LEFT;
+					return RIGHT;
 				}
 			case FRONT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return LEFT;
 				case NORTH:
-					return BOTTOM;  //DID
+					return BOTTOM;  
 				case SOUTH:
-					return TOP;  //DID
+					return TOP;  
 				case WEST:
 					return RIGHT;
 				}
 			case LEFT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return RIGHT;
 				case NORTH:
-					return BOTTOM;  //DID
+					return BOTTOM;  
 				case SOUTH:
 					return TOP;
 				case WEST:
 					return FRONT;
 				}
 			case RIGHT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return RIGHT;
 				case NORTH:
@@ -466,13 +643,13 @@ public class Cube {
 					return LEFT;
 				}
 			case TOP:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return LEFT;
 				case NORTH:
-					return FRONT; //DID
+					return FRONT; 
 				case SOUTH:
-					return BACK;  //DID
+					return BACK;  
 				case WEST:
 					return RIGHT;
 				}
@@ -481,10 +658,10 @@ public class Cube {
 			}
 			return null;
 		}
-		private View getLeft () {
+		private View getLeft (Cube cube) {
 			switch (this) {
 			case BACK:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return TOP;
 				case NORTH:
@@ -495,7 +672,7 @@ public class Cube {
 					return BOTTOM;
 				}
 			case BOTTOM:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return FRONT;
 				case NORTH:
@@ -503,12 +680,12 @@ public class Cube {
 				case SOUTH:
 					return RIGHT;
 				case WEST:
-					return FRONT;
+					return BACK;
 				}
 			case FRONT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
-					return BOTTOM;
+					return TOP;
 				case NORTH:
 					return LEFT;
 				case SOUTH:
@@ -517,7 +694,7 @@ public class Cube {
 					return RIGHT;
 				}
 			case LEFT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return TOP;
 				case NORTH:
@@ -525,10 +702,10 @@ public class Cube {
 				case SOUTH:
 					return FRONT;
 				case WEST:
-					return TOP; //DID
+					return BOTTOM; 
 				}
 			case RIGHT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return TOP;
 				case NORTH:
@@ -539,7 +716,7 @@ public class Cube {
 					return TOP;
 				}
 			case TOP:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return BACK;
 				case NORTH:
@@ -554,10 +731,10 @@ public class Cube {
 			}
 			return null;
 		}
-		private View getRight () {
+		private View getRight (Cube cube) {
 			switch (this) {
 			case BACK:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return TOP;
 				case NORTH:
@@ -568,18 +745,18 @@ public class Cube {
 					return BOTTOM;
 				}
 			case BOTTOM:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
-					return FRONT;
+					return BACK;
 				case NORTH:
 					return RIGHT;
 				case SOUTH:
 					return LEFT;
 				case WEST:
-					return BACK;
+					return FRONT;
 				}
 			case FRONT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return TOP;
 				case NORTH:
@@ -590,7 +767,7 @@ public class Cube {
 					return BOTTOM;
 				}
 			case LEFT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return BOTTOM;
 				case NORTH:
@@ -601,9 +778,9 @@ public class Cube {
 					return TOP;
 				}
 			case RIGHT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
-					return TOP;
+					return BOTTOM;
 				case NORTH:
 					return BACK;
 				case SOUTH:
@@ -612,7 +789,7 @@ public class Cube {
 					return BOTTOM;
 				}
 			case TOP:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return FRONT;
 				case NORTH:
@@ -627,10 +804,10 @@ public class Cube {
 			}
 			return null;
 		}
-		private View getUp () {
+		private View getUp (Cube cube) {
 			switch (this) {
 			case BACK:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return RIGHT;
 				case NORTH:
@@ -641,20 +818,20 @@ public class Cube {
 					return LEFT;
 				}
 			case BOTTOM:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
-					return LEFT;
+					return RIGHT;
 				case NORTH:
 					return FRONT;
 				case SOUTH:
 					return BACK;
 				case WEST:
-					return RIGHT;
+					return LEFT;
 				}
 			case FRONT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
-					return LEFT;
+					return RIGHT;
 				case NORTH:
 					return TOP;
 				case SOUTH:
@@ -663,7 +840,7 @@ public class Cube {
 					return RIGHT;
 				}
 			case LEFT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return FRONT;
 				case NORTH:
@@ -674,7 +851,7 @@ public class Cube {
 					return BACK;
 				}
 			case RIGHT:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return BACK;
 				case NORTH:
@@ -685,7 +862,7 @@ public class Cube {
 					return BACK;
 				}
 			case TOP:
-				switch (rotations.get(this)) {
+				switch (cube.rotations.get(this)) {
 				case EAST:
 					return RIGHT;
 				case NORTH:
@@ -696,21 +873,20 @@ public class Cube {
 					return LEFT;
 				}
 			default:
-				break;
+				return null;
 			}
-			return null;
 		}
 		
-		public View getView(Direction direction) {
+		public View getView(Direction direction, Cube cube) {
 			switch(direction) {
 			case DOWN:
-				return getDown();
+				return getDown(cube);
 			case LEFT:
-				return getLeft();
+				return getLeft(cube);
 			case RIGHT:
-				return getRight();
+				return getRight(cube);
 			case UP:
-				return getUp();
+				return getUp(cube);
 			case NONE:
 				return this;
 			}
