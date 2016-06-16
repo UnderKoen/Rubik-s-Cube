@@ -34,15 +34,6 @@ public class Cube {
 			HashMap<Integer, Color> colors = new HashMap<Integer, Color>();
 			for (int i2 = 0; i2 != 9; i2++) {
 				Color color = Color.getColor(i);
-				if (i2 == 0) {
-					color = Color.RED;
-					if (i == 2) {
-						color = Color.GREEN;
-					}
-					if (i == 4) {
-						color = Color.BLUE;
-					}
-				}
 				colors.put(i2, color);
 			}
 			rotations.put(View.getView(i), Rotation.NORTH);
@@ -57,15 +48,6 @@ public class Cube {
 			HashMap<Integer, Color> colors = new HashMap<Integer, Color>();
 			for (int i2 = 0; i2 != 9; i2++) {
 				Color color = Color.getColor(i);
-				if (i2 == 8) {
-					color = Color.RED;
-					if (i == 2) {
-						color = Color.GREEN;
-					}
-					if (i == 4) {
-						color = Color.BLUE;
-					}
-				}
 				colors.put(i2, color);
 			}
 			rotations.put(View.getView(i), rot);
@@ -338,6 +320,11 @@ public class Cube {
 		case BACK:
 			switch (rotations.get(view)) {
 			case EAST:
+				rotate(View.BACK, Rotation.EAST);
+				rotate(View.TOP, Rotation.WEST);
+				rotate(View.BOTTOM, Rotation.WEST);
+				rotate(View.LEFT, Rotation.EAST);
+				rotate(View.RIGHT, Rotation.EAST);
 				break;
 			case NORTH:
 				rotate(View.BACK, Rotation.NORTH);
@@ -354,6 +341,11 @@ public class Cube {
 				rotate(View.RIGHT, Rotation.SOUTH);
 				break;
 			case WEST:
+				rotate(View.BACK, Rotation.WEST);
+				rotate(View.TOP, Rotation.EAST);
+				rotate(View.BOTTOM, Rotation.EAST);
+				rotate(View.LEFT, Rotation.WEST);
+				rotate(View.RIGHT, Rotation.WEST);
 				break;
 			}
 			break;
@@ -392,6 +384,11 @@ public class Cube {
 		case FRONT:
 			switch (rotations.get(view)) {
 			case EAST:
+				rotate(View.FRONT, Rotation.EAST);
+				rotate(View.TOP, Rotation.EAST);
+				rotate(View.BOTTOM, Rotation.EAST);
+				rotate(View.LEFT, Rotation.EAST);
+				rotate(View.RIGHT, Rotation.EAST);
 				break;
 			case NORTH:
 				rotate(View.FRONT, Rotation.NORTH);
@@ -408,12 +405,22 @@ public class Cube {
 				rotate(View.RIGHT, Rotation.SOUTH);
 				break;
 			case WEST:
+				rotate(View.FRONT, Rotation.WEST);
+				rotate(View.TOP, Rotation.WEST);
+				rotate(View.BOTTOM, Rotation.WEST);
+				rotate(View.LEFT, Rotation.WEST);
+				rotate(View.RIGHT, Rotation.WEST);
 				break;
 			}
 			break;
 		case LEFT:
 			switch (rotations.get(view)) {
 			case EAST:
+				rotate(View.FRONT, Rotation.EAST);
+				rotate(View.TOP, Rotation.SOUTH);
+				rotate(View.BOTTOM, Rotation.NORTH);
+				rotate(View.LEFT, Rotation.EAST);
+				rotate(View.BACK, Rotation.EAST);
 				break;
 			case NORTH:
 				rotate(View.FRONT, Rotation.NORTH);
@@ -430,28 +437,43 @@ public class Cube {
 				rotate(View.BACK, Rotation.SOUTH);
 				break;
 			case WEST:
+				rotate(View.FRONT, Rotation.WEST);
+				rotate(View.TOP, Rotation.NORTH);
+				rotate(View.BOTTOM, Rotation.SOUTH);
+				rotate(View.LEFT, Rotation.WEST);
+				rotate(View.BACK, Rotation.WEST);
 				break;
 			}
 			break;
 		case RIGHT:
 			switch (rotations.get(view)) {
 			case EAST:
+				rotate(View.FRONT, Rotation.EAST);
+				rotate(View.TOP, Rotation.NORTH);
+				rotate(View.BOTTOM, Rotation.SOUTH);
+				rotate(View.RIGHT, Rotation.EAST);
+				rotate(View.BACK, Rotation.EAST);
 				break;
 			case NORTH:
 				rotate(View.FRONT, Rotation.NORTH);
 				rotate(View.TOP, Rotation.WEST);
 				rotate(View.BOTTOM, Rotation.EAST);
-				rotate(View.LEFT, Rotation.NORTH);
+				rotate(View.RIGHT, Rotation.NORTH);
 				rotate(View.BACK, Rotation.NORTH);
 				break;
 			case SOUTH:
 				rotate(View.FRONT, Rotation.SOUTH);
 				rotate(View.TOP, Rotation.EAST);
 				rotate(View.BOTTOM, Rotation.WEST);
-				rotate(View.LEFT, Rotation.SOUTH);
+				rotate(View.RIGHT, Rotation.SOUTH);
 				rotate(View.BACK, Rotation.SOUTH);
 				break;
 			case WEST:
+				rotate(View.FRONT, Rotation.WEST);
+				rotate(View.TOP, Rotation.SOUTH);
+				rotate(View.BOTTOM, Rotation.NORTH);
+				rotate(View.RIGHT, Rotation.WEST);
+				rotate(View.BACK, Rotation.WEST);
 				break;
 			}
 			break;
@@ -488,19 +510,22 @@ public class Cube {
 			}
 			break;
 		}
-		
-		System.out.println("-=-");
-		System.out.println(view + " -=- " + rotations.get(view));
 		show(defaultPane, defaultX, defaultY);
 	}
 	
 	public static enum Color {
-		BLUE(0, "Blue"),
-		GREEN(1, "Green"),
-		RED(2, "Red"),
-		WHITE(3, "White"),
+		// 0 = front
+		// 1 = left
+		// 2 = right
+		// 3 = top
+		// 4 = bottom
+		// 5 = back
+		BLUE(0, "Blue"), 
+		GREEN(5, "Green"),
+		RED(3, "Red"),
+		WHITE(1, "White"),
 		ORANGE(4, "Orange"),
-		YELLOW(5, "Yellow");
+		YELLOW(2, "Yellow");
 		
 		private int id;
 		
@@ -525,15 +550,15 @@ public class Cube {
 			case 0:
 				return BLUE;
 			case 1:
-				return GREEN;	
+				return WHITE;	
 			case 2:
-				return RED;
+				return YELLOW;
 			case 3:
-				return WHITE;
+				return RED;
 			case 4:
 				return ORANGE;
 			case 5:
-				return YELLOW;
+				return GREEN;
 			default:
 				return null;
 			}
@@ -623,7 +648,7 @@ public class Cube {
 			case LEFT:
 				switch (cube.rotations.get(this)) {
 				case EAST:
-					return RIGHT;
+					return BACK;
 				case NORTH:
 					return BOTTOM;  
 				case SOUTH:
@@ -634,13 +659,13 @@ public class Cube {
 			case RIGHT:
 				switch (cube.rotations.get(this)) {
 				case EAST:
-					return RIGHT;
+					return FRONT;
 				case NORTH:
 					return BOTTOM;
 				case SOUTH:
 					return TOP; 
 				case WEST:
-					return LEFT;
+					return BACK;
 				}
 			case TOP:
 				switch (cube.rotations.get(this)) {
@@ -691,7 +716,7 @@ public class Cube {
 				case SOUTH:
 					return RIGHT;
 				case WEST:
-					return RIGHT;
+					return BOTTOM;
 				}
 			case LEFT:
 				switch (cube.rotations.get(this)) {
@@ -713,7 +738,7 @@ public class Cube {
 				case SOUTH:
 					return BACK;
 				case WEST:
-					return TOP;
+					return BOTTOM;
 				}
 			case TOP:
 				switch (cube.rotations.get(this)) {
@@ -736,13 +761,13 @@ public class Cube {
 			case BACK:
 				switch (cube.rotations.get(this)) {
 				case EAST:
-					return TOP;
+					return BOTTOM;
 				case NORTH:
 					return LEFT;
 				case SOUTH:
 					return RIGHT;
 				case WEST:
-					return BOTTOM;
+					return TOP;
 				}
 			case BOTTOM:
 				switch (cube.rotations.get(this)) {
@@ -758,13 +783,13 @@ public class Cube {
 			case FRONT:
 				switch (cube.rotations.get(this)) {
 				case EAST:
-					return TOP;
+					return BOTTOM;
 				case NORTH:
 					return RIGHT;
 				case SOUTH:
 					return LEFT;
 				case WEST:
-					return BOTTOM;
+					return TOP;
 				}
 			case LEFT:
 				switch (cube.rotations.get(this)) {
@@ -786,7 +811,7 @@ public class Cube {
 				case SOUTH:
 					return FRONT;
 				case WEST:
-					return BOTTOM;
+					return TOP;
 				}
 			case TOP:
 				switch (cube.rotations.get(this)) {
@@ -809,13 +834,13 @@ public class Cube {
 			case BACK:
 				switch (cube.rotations.get(this)) {
 				case EAST:
-					return RIGHT;
+					return LEFT;
 				case NORTH:
 					return TOP;
 				case SOUTH:
 					return BOTTOM;
 				case WEST:
-					return LEFT;
+					return RIGHT;
 				}
 			case BOTTOM:
 				switch (cube.rotations.get(this)) {
@@ -837,7 +862,7 @@ public class Cube {
 				case SOUTH:
 					return BOTTOM;
 				case WEST:
-					return RIGHT;
+					return LEFT;
 				}
 			case LEFT:
 				switch (cube.rotations.get(this)) {
@@ -859,7 +884,7 @@ public class Cube {
 				case SOUTH:
 					return BOTTOM;
 				case WEST:
-					return BACK;
+					return FRONT;
 				}
 			case TOP:
 				switch (cube.rotations.get(this)) {
