@@ -7,15 +7,17 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import nl.Under_Koen.RubiksCube.HomeMenu;
 import nl.Under_Koen.RubiksCube.Main;
 import nl.Under_Koen.RubiksCube.Cube.Cube;
 import nl.Under_Koen.RubiksCube.Cube.Direction;
+import nl.Under_Koen.RubiksCube.Main.OptionsTypes;
 
 public class Game {
 
 	public static Scene gameScene() {
 		StackPane root = new StackPane();
-        Scene main = new Scene(root,1000,560);
+        Scene main = new Scene(root);
         root.setAlignment(Pos.TOP_LEFT);
         HomeMenu menu = new HomeMenu();
         Cube cube = new Cube();
@@ -44,18 +46,19 @@ public class Game {
             @Override
             public void handle(ActionEvent event) {
             	Main.stage.setScene(gameScene());
+            	show(root, 350, 100, cube);
             }
         });
         menu.addButton("Options", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	wide = !wide;
-            	show(root, 350, 100, cube);
+            	Main.stage.setScene(Options.optionsScene());
             }
         });
         menu.addButton("Quit", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+            	Main.stage.setFullScreen(false);
             	Main.stage.close();
             }
         });
@@ -65,12 +68,10 @@ public class Game {
 	}
 	
 	private static void show(StackPane root, int x, int y, Cube cube) {
-		if (wide) {
+		if (Main.getOption(OptionsTypes.RENDER).contains("false")) {
 			cube.showWide(root, x, y);
 		} else {
 			cube.showSmall(root, x, y);
 		}
 	}
-
-	private static boolean wide = true;
 }

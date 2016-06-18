@@ -1,4 +1,4 @@
-package nl.Under_Koen.RubiksCube.Scenes;
+package nl.Under_Koen.RubiksCube;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class HomeMenu {
 	}
 	
 	public void show(Pane pane) {
-		Rectangle layout = new Rectangle(0,0,150,560);
+		Rectangle layout = new Rectangle(0,0,150 * Main.getXscale(),560  * Main.getYscale());
         layout.setFill(Color.rgb(100, 100, 100, 0.4));
 		pane.getChildren().add(layout);
 		for (Button button : buttons) {
