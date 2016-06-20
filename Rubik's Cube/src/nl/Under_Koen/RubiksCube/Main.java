@@ -14,6 +14,11 @@ import nl.Under_Koen.RubiksCube.Scenes.*;
 
 public class Main extends Application {
 	
+	//TODO Save menu, Load menu
+	//TODO in save ids
+	//TODO in options back
+	//TODO row rotation
+	
 	public static Stage stage;
 	
 	private static Double defaultWidth = 1000.0;

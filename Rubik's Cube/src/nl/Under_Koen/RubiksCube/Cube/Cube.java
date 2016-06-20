@@ -10,12 +10,12 @@ import nl.Under_Koen.RubiksCube.Main;
 
 public class Cube {
 
-	private HashMap<View, HashMap<Integer, Color>> ids = new HashMap<View, HashMap<Integer, Color>>();
-	private HashMap<View, HashMap<Integer, Color>> ids2 = new HashMap<View, HashMap<Integer, Color>>();
-	private HashMap<View, Rotation> rotations = new HashMap<View, Rotation>();
+	public HashMap<View, HashMap<Integer, Color>> ids = new HashMap<View, HashMap<Integer, Color>>();
+	public HashMap<View, HashMap<Integer, Color>> ids2 = new HashMap<View, HashMap<Integer, Color>>();
+	public HashMap<View, Rotation> rotations = new HashMap<View, Rotation>();
 	//				Side, Upside
 	
-	private View view = View.FRONT;
+	public View view = View.FRONT;
 	
 	public Cube() {
 		toDefault();
@@ -23,6 +23,8 @@ public class Cube {
 	
 	public void toDefault() {
 		ids.clear();
+		ids2.clear();
+		rotations.clear();
 		for (int i = 0; i != 6; i++) {
 			HashMap<Integer, Color> colors = new HashMap<Integer, Color>();
 			for (int i2 = 0; i2 != 9; i2++) {
@@ -33,6 +35,31 @@ public class Cube {
 			ids.put(View.getView(i), colors);
 			ids2.put(View.getView(i), colors);
 		}
+		view = View.FRONT;
+	}
+	
+	public void setView (View view) { 
+		this.view = view;
+		move(Direction.NONE);
+	}
+	
+	public void reset() {
+		toDefault();
+		move(Direction.NONE);
+	}
+	
+	public void loadSave(String fileName) {
+		Save save = Save.getSave(fileName);
+		if (save == null) {
+			return;
+		}
+		view = save.view;
+		rotate(view, save.rotation);
+		move(Direction.NONE);
+	}
+	
+	public void saveSave(String fileName) {
+		new Save(this, fileName);
 	}
 	
 	public void rotate (View view, Rotation rotation) {

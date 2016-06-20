@@ -42,17 +42,30 @@ public class Game {
                 }
             }
         });
-        menu.addButton("Reset", new EventHandler<ActionEvent>() {
+        menu.addButton("Load", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	Main.stage.setScene(gameScene());
+            	cube.loadSave("Game");
             	show(root, 350, 100, cube);
+            }
+        });
+        menu.addButton("Save", new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	cube.saveSave("Game");
             }
         });
         menu.addButton("Options", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
             	Main.stage.setScene(Options.optionsScene());
+            }
+        });
+        menu.addButton("Reset", new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	cube.reset();
+            	show(root, 350, 100, cube);
             }
         });
         menu.addButton("Quit", new EventHandler<ActionEvent>() {
