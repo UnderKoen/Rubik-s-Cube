@@ -24,6 +24,7 @@ public class Home {
         menu.addButton("Options", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+            	Options.setBack(0);
             	Main.stage.setScene(Options.optionsScene());
             }
         });

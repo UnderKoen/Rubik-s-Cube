@@ -1,5 +1,6 @@
 package nl.Under_Koen.RubiksCube.Cube;
 
+import java.io.File;
 import java.util.HashMap;
 
 import javafx.scene.Group;
@@ -19,6 +20,11 @@ public class Cube {
 	
 	public Cube() {
 		toDefault();
+	}
+	
+	public void setIds(HashMap<View, HashMap<Integer, Color>> ids) {
+		this.ids = ids;
+		move(Direction.NONE);
 	}
 	
 	public void toDefault() {
@@ -48,18 +54,19 @@ public class Cube {
 		move(Direction.NONE);
 	}
 	
-	public void loadSave(String fileName) {
-		Save save = Save.getSave(fileName);
+	public void loadSave(File file) {
+		Save save = Save.getSave(file);
 		if (save == null) {
 			return;
 		}
+		setIds(save.ids);
 		view = save.view;
 		rotate(view, save.rotation);
 		move(Direction.NONE);
 	}
 	
-	public void saveSave(String fileName) {
-		new Save(this, fileName);
+	public void saveSave(File file) {
+		new Save(this, file);
 	}
 	
 	public void rotate (View view, Rotation rotation) {
@@ -320,19 +327,21 @@ public class Cube {
 		int Vrow = 0;
 		for (int i2 = 0; i2 != 9; i2++) {
 			Color color = ids2.get(view).get(i2);
-			Image image = new Image (Main.class.getResource("/Tiles/Default/Default_Tile_" + color + ".png").toString());
-			ImageView imageView = new ImageView(image);
-			imageView.setFitHeight(100);
-			imageView.setFitWidth(100);
-			
-			imageView.setTranslateX(x + (70 * Hrow));
-			imageView.setTranslateY(y + (70 * Vrow));
+			if (color != null) {
+				Image image = new Image (Main.class.getResource("/Tiles/Default/Default_Tile_" + color + ".png").toString());
+				ImageView imageView = new ImageView(image);
+				imageView.setFitHeight(100);
+				imageView.setFitWidth(100);
+				
+				imageView.setTranslateX(x + (70 * Hrow));
+				imageView.setTranslateY(y + (70 * Vrow));
+				cube.getChildren().add(imageView);
+			}
 			Hrow++;
 			if (Hrow >= 3) {
 				Hrow = 0;
 				Vrow++;
 			}
-			cube.getChildren().add(imageView);
 		}
 		Vrow = 0;
 		Hrow = 0;

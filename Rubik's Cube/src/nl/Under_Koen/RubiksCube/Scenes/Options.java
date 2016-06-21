@@ -13,6 +13,12 @@ import javafx.scene.control.ToggleGroup;
 
 public class Options {
 	
+	public static int back;
+	
+	public static void setBack(int scene) {
+		back = scene;
+	}
+	
 	public static Scene optionsScene() {
         StackPane root = new StackPane();
         ToggleButton wide = new ToggleButton("Wide");
@@ -52,7 +58,11 @@ public class Options {
         menu.addButton("Back", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	Main.stage.setScene(Home.homeScene());
+            	if (back == 0) {
+            		Main.stage.setScene(Home.homeScene());
+            	} else {
+            		Main.stage.setScene(Game.gameScene());
+            	}
             }
         });
         menu.addButton("Quit", new EventHandler<ActionEvent>() {
