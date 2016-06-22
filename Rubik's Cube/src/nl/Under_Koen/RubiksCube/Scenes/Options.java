@@ -24,12 +24,12 @@ public class Options {
         ToggleButton wide = new ToggleButton("Wide");
         ToggleButton small = new ToggleButton("Small");
         ToggleGroup grp = new ToggleGroup();
-        wide.setTranslateX(300);
+        wide.setTranslateX(170);
         wide.setPrefWidth(100);
         small.setPrefWidth(100);
-        wide.setTranslateY(100);
-        small.setTranslateX(400);
-        small.setTranslateY(100);
+        wide.setTranslateY(20);
+        small.setTranslateX(270);
+        small.setTranslateY(20);
         wide.setToggleGroup(grp);
         small.setToggleGroup(grp);
         if (Main.getOption(OptionsTypes.RENDER).contains("false")) {
@@ -52,6 +52,39 @@ public class Options {
             }
         });
         root.getChildren().addAll(wide, small);
+        
+        ToggleButton inverted = new ToggleButton("Inverted");
+        ToggleButton nInverted = new ToggleButton("Not Inverted");
+        ToggleGroup grp2 = new ToggleGroup();
+        inverted.setTranslateX(170);
+        inverted.setPrefWidth(100);
+        nInverted.setPrefWidth(100);
+        inverted.setTranslateY(70);
+        nInverted.setTranslateX(270);
+        nInverted.setTranslateY(70);
+        inverted.setToggleGroup(grp2);
+        nInverted.setToggleGroup(grp2);
+        if (Main.getOption(OptionsTypes.INVERTEDKEYS).contains("false")) {
+        	grp2.selectToggle(inverted);
+        } else {
+        	grp2.selectToggle(nInverted);
+        }
+        inverted.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	grp2.selectToggle(wide);
+            	Main.setOption(OptionsTypes.INVERTEDKEYS, false);
+            }
+        });
+        nInverted.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	grp2.selectToggle(nInverted);
+            	Main.setOption(OptionsTypes.INVERTEDKEYS, true);
+            }
+        });
+        root.getChildren().addAll(inverted, nInverted);
+        
         Scene main = new Scene(root);
         root.setAlignment(Pos.TOP_LEFT);
         HomeMenu menu = new HomeMenu();

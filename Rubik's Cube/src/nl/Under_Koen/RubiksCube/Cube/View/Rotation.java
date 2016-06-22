@@ -1,4 +1,4 @@
-package nl.Under_Koen.RubiksCube.Cube;
+package nl.Under_Koen.RubiksCube.Cube.View;
 
 public enum Rotation {
 	
@@ -21,6 +21,21 @@ public enum Rotation {
 	
 	public String toString () {
 		return name;
+	}
+	
+	public Rotation flip() {
+		switch (this) {
+		case EAST:
+			return WEST;
+		case WEST:
+			return EAST;
+		case NORTH:
+			return SOUTH;
+		case SOUTH:
+			return NORTH;
+		default:
+			return null;
+		}
 	}
 	
 	public static Rotation getRotation(int id) {

@@ -69,7 +69,8 @@ public class Main extends Application {
 	}
 	
 	public static enum OptionsTypes {
-		RENDER(0);
+		RENDER(0),
+		INVERTEDKEYS(1);
 		
 		private int line;
 		
@@ -100,16 +101,10 @@ public class Main extends Application {
 					fileWriter.write(next);
 					fileWriter.newLine();
 				}
-				switch (type) {
-				case RENDER:
-					fileWriter.write(newValue.toString());
-					fileWriter.newLine();
-					if (scanner.hasNext()) {
-						scanner.next();
-					}
-					break;
-				default:
-					break;
+				fileWriter.write(newValue.toString());
+				fileWriter.newLine();
+				if (scanner.hasNext()) {
+					scanner.next();
 				}
 				while (scanner.hasNext()) {
 					fileWriter.write(scanner.next());

@@ -1,6 +1,7 @@
 package nl.Under_Koen.RubiksCube.Cube;
 
 import java.io.BufferedWriter;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -8,7 +9,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import nl.Under_Koen.RubiksCube.Cube.Cube.Color;
-import nl.Under_Koen.RubiksCube.Cube.Cube.View;
+import nl.Under_Koen.RubiksCube.Cube.View.View;
+import nl.Under_Koen.RubiksCube.Cube.View.Direction;
+import nl.Under_Koen.RubiksCube.Cube.View.Rotation;
 
 public class Save {
 	
