@@ -34,208 +34,149 @@ public class Cube {
 		move(Direction.NONE);
 	}
 	
-	//TODO methode works only with middle
+	//STILL DON"T WORK
+	
+	/* how it's works:
+	 * get rotation of view
+	 * new cube set ids to ids2
+	 * old code with only 3 ids and no switch
+	 * rotate cube so that if the rotation was west its now north {
+	 *  if view was east it will rotate view 1 time right
+	 *  south 2 times
+	 *  west 3 times
+	 *  north 0 times
+	 * }
+	 * move so that all side are good
+	 * set ids to to the cubes ids2
+	 */
+	/*private HashMap<View, HashMap<Integer, Color>> getRowRotatedIds (ArrayList<Integer> listIds, ArrayList<View> listViews) {
+		Cube testCube = new Cube();
+		testCube.setIds(ids2);
+		HashMap<View, HashMap<Integer, Color>> oldIds = testCube.ids;
+		HashMap<View, HashMap<Integer, Color>> newIds = oldIds;
+		ArrayList<Color> rowBefore = null;
+		boolean first = true;
+		for (View v : listViews) {
+			ArrayList<Color> oldRow = rowBefore;
+			rowBefore = new ArrayList<Color>();
+			for (int i : listIds) {
+				rowBefore.add(oldIds.get(v).get(i));
+			}
+			if (!first) {
+				HashMap<Integer, Color> row = newIds.get(v);
+				int i2 = 0;
+				for (int i : listIds) {
+					row.remove(i);
+					row.put(i, oldRow.get(i2));
+					i2++;
+				}
+			}
+			testCube.setIds(newIds);
+			switch (rotations.get(v)) {
+			case EAST:
+				testCube.addRotation(v, Direction.RIGHT, false);
+				testCube.addRotation(v, Direction.RIGHT, false);
+				break;
+			case NORTH:
+				break;
+			case SOUTH:
+				testCube.addRotation(v, Direction.RIGHT, false);
+				testCube.addRotation(v, Direction.RIGHT, false);
+				break;
+			case WEST:
+				testCube.addRotation(v, Direction.RIGHT, false);
+				testCube.addRotation(v, Direction.RIGHT, false);
+				testCube.addRotation(v, Direction.RIGHT, false);
+				break;
+			}
+			first = false;
+		}
+		return testCube.ids;
+	}
+	
 	/**
 	 * @throws Exception if dir is not relative with the row
 	 */
+	/*
 	public void moveRow(Row row, Direction dir) throws Exception {
-		HashMap<View, HashMap<Integer, Color>> oldIds = ids;
-		HashMap<View, HashMap<Integer, Color>> newIds = oldIds;
+		ArrayList<Integer> listIds = new ArrayList<Integer>();
+		ArrayList<View> listViews = new ArrayList<View>();
+		listViews.add(view);
+		listViews.add(view.getView(dir, this));
+		listViews.add(view.getView(Direction.OPPOSITE, this));
+		listViews.add(view.getView(dir.flip(), this));
+		listViews.add(view);
+		View rotView = view;
+		Direction viewRot = Direction.NONE;
 		if (row instanceof HRow) {
 			if (dir != Direction.LEFT && dir != Direction.RIGHT) {
 				throw new Exception();
 			}
 			HRow hRow = (HRow) row;
-			ArrayList<Integer> listIds = new ArrayList<Integer>();
-			View view1 = view.getView(dir, this);
-			View view2 = view.getView(Direction.OPPOSITE, this);
-			View view3 = view.getView(dir.flip(), this);
-			View[] listViews = {view, view1, view2, view3, view};
-			ArrayList<Color> rowBefore = null;
-			boolean first = true;
 			switch (hRow) {
 			case BOTTOM:
-				/*for (View v : listViews) {
-					Rotation test = rotations.get(v);
-					ArrayList<Integer> oldListIds = listIds;
-					switch (test) {
-					case EAST:
-						listIds.clear();
-						listIds.add(0);
-						listIds.add(3);
-						listIds.add(6);
-						break;
-					case NORTH:
-						listIds.clear();
-						listIds.add(6);
-						listIds.add(7);
-						listIds.add(8);
-						break;
-					case SOUTH:
-						listIds.clear();
-						listIds.add(0);
-						listIds.add(1);
-						listIds.add(2);
-						break;
-					case WEST:
-						listIds.clear();
-						listIds.add(2);
-						listIds.add(5);
-						listIds.add(8);
-						break;
-					}
-					ArrayList<Color> oldRow = rowBefore;
-					rowBefore = new ArrayList<Color>();
-					for (int i : oldListIds) {
-						rowBefore.add(oldIds.get(v).get(i));
-					}
-					if (!first) {
-						HashMap<Integer, Color> row2 = newIds.get(v);
-						int i2 = 0;
-						for (int i : listIds) {
-							row2.remove(i);
-							row2.put(i, oldRow.get(i2));
-							i2++;
-						}
-						newIds.remove(v);
-						newIds.put(v, row2);
-					}
-					first = false;
-				}
-				addRotation(view.getView(Direction.DOWN, this), dir, false);*/
+				listIds.add(6);
+				listIds.add(7);
+				listIds.add(8);
+				rotView = view.getView(Direction.DOWN, this);
+				viewRot = dir;
 				break;
 			case MIDDLE:
-				for (View v : listViews) {
-					ArrayList<Integer> oldListIds = listIds;
-					Rotation test = rotations.get(v);
-					if (view.getView(Direction.OPPOSITE, this) == v) { 
-						test = test.flip();
-					}
-					switch (test) {
-					case EAST:
-						listIds.clear();
-						listIds.add(1);
-						listIds.add(4);
-						listIds.add(7);
-						break;
-					case NORTH:
-						listIds.clear();
-						listIds.add(3);
-						listIds.add(4);
-						listIds.add(5);
-						break;
-					case SOUTH:
-						listIds.clear();
-						listIds.add(5);
-						listIds.add(4);
-						listIds.add(3);
-						break;
-					case WEST:
-						listIds.clear();
-						listIds.add(7);
-						listIds.add(4);
-						listIds.add(1);
-						break;
-					}
-					ArrayList<Color> oldRow = rowBefore;
-					rowBefore = new ArrayList<Color>();
-					for (int i : oldListIds) {
-						rowBefore.add(oldIds.get(v).get(i));
-					}
-					if (!first) {
-						HashMap<Integer, Color> row2 = newIds.get(v);
-						int i2 = 0;
-						for (int i : listIds) {
-							row2.remove(i);
-							row2.put(i, oldRow.get(i2));
-							i2++;
-						}
-						newIds.remove(v);
-						newIds.put(v, row2);
-					}
-					first = false;
-				}
+				listIds.add(3);
+				listIds.add(4);
+				listIds.add(5);
 				break;
 			case TOP:
+				listIds.add(0);
+				listIds.add(1);
+				listIds.add(2);
+				rotView = view.getView(Direction.UP, this);
+				viewRot = dir.flip();
 				break;
 			}
-			addRotation(view, Direction.NONE);
-			move(Direction.NONE);
 		}
 		if (row instanceof VRow) {
 			if (dir != Direction.UP && dir != Direction.DOWN) {
 				throw new Exception();
 			}
 			VRow vRow = (VRow) row;
-			ArrayList<Integer> listIds = new ArrayList<Integer>();
-			View view1 = view.getView(dir, this);
-			View view2 = view.getView(Direction.OPPOSITE, this);
-			View view3 = view.getView(dir.flip(), this);
-			View[] listViews = {view, view1, view2, view3, view};
-			ArrayList<Color> rowBefore = null;
-			boolean first = true;
 			switch (vRow) {
 			case LEFT:
-				break;
-			case MIDDLE:
-				for (View v : listViews) {
-					ArrayList<Integer> oldListIds = listIds;
-					Rotation test = rotations.get(v);
-					if (view.getView(Direction.OPPOSITE, this) == v) { 
-						test = test.flip();
-					}
-					switch (test) {
-					case EAST:
-						listIds.clear();
-						listIds.add(3);
-						listIds.add(4);
-						listIds.add(5);
-						break;
-					case NORTH:
-						listIds.clear();
-						listIds.add(7);
-						listIds.add(4);
-						listIds.add(1);
-						break;
-					case SOUTH:
-						listIds.clear();
-						listIds.add(1);
-						listIds.add(4);
-						listIds.add(7);
-						break;
-					case WEST:
-						listIds.clear();
-						listIds.add(5);
-						listIds.add(4);
-						listIds.add(3);
-						break;
-					}
-					ArrayList<Color> oldRow = rowBefore;
-					rowBefore = new ArrayList<Color>();
-					for (int i : oldListIds) {
-						rowBefore.add(oldIds.get(v).get(i));
-					}
-					if (!first) {
-						HashMap<Integer, Color> row2 = newIds.get(v);
-						int i2 = 0;
-						for (int i : listIds) {
-							row2.remove(i);
-							row2.put(i, oldRow.get(i2));
-							i2++;
-						}
-						newIds.remove(v);
-						newIds.put(v, row2);
-					}
-					first = false;
+				listIds.add(0);
+				listIds.add(3);
+				listIds.add(6);
+				rotView = view.getView(Direction.LEFT, this);
+				if (dir == Direction.UP) { 
+					viewRot = Direction.LEFT;
+				} else {
+					viewRot = Direction.RIGHT;
 				}
 				break;
+			case MIDDLE:
+				listIds.add(1);
+				listIds.add(4);
+				listIds.add(7);
+				break;
 			case RIGHT:
+				listIds.add(2);
+				listIds.add(5);
+				listIds.add(8);
+				rotView = view.getView(Direction.RIGHT, this);
+				if (dir == Direction.UP) { 
+					viewRot = Direction.RIGHT;
+				} else {
+					viewRot = Direction.LEFT;
+				}
 				break;
 			}
-			addRotation(view, Direction.NONE);
-			move(Direction.NONE);
 		}
+		HashMap<View, HashMap<Integer, Color>> newIds = getRowRotatedIds(listIds, listViews);
+		setIds(newIds);
+		//addRotation(rotView, viewRot, false);
+		//TODO ^
+		move(Direction.NONE);
 	}
+	*/
 	
 	public void toDefault() {
 		ids.clear();

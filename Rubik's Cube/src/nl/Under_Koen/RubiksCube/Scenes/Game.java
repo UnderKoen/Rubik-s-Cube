@@ -190,6 +190,7 @@ public class Game {
 		}
 		root.getChildren().remove(images);
 		images = new Group();
+		/*
         for (int i = 0; i != 3; i++) {
 		    Image image = new Image (Main.class.getResource("/Arrows/Arrow_Right.png").toString());
 			ImageView imageView = new ImageView(image);
@@ -253,12 +254,38 @@ public class Game {
 			imageView.setTranslateX(65 + 70 * i);
 			imageView.setTranslateY(285);
 			imageView.setCursor(Cursor.HAND);
+			if (i == 0) {
+				imageView.setOnMousePressed(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent event) {
+						try {
+							cube.moveRow(VRow.LEFT, Direction.DOWN);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		            	show(root, 350, 100, cube);
+					}
+				});
+			}
 			if (i == 1) {
 				imageView.setOnMousePressed(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {
 						try {
 							cube.moveRow(VRow.MIDDLE, Direction.DOWN);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		            	show(root, 350, 100, cube);
+					}
+				});
+			}
+			if (i == 2) {
+				imageView.setOnMousePressed(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent event) {
+						try {
+							cube.moveRow(VRow.RIGHT, Direction.DOWN);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -276,12 +303,38 @@ public class Game {
 			imageView.setTranslateX(65 + 70 * i);
 			imageView.setTranslateY(15);
 			imageView.setCursor(Cursor.HAND);
+			if (i == 0) {
+				imageView.setOnMousePressed(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent event) {
+						try {
+							cube.moveRow(VRow.LEFT, Direction.UP);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		            	show(root, 350, 100, cube);
+					}
+				});
+			}
 			if (i == 1) {
 				imageView.setOnMousePressed(new EventHandler<MouseEvent>(){
 					@Override
 					public void handle(MouseEvent event) {
 						try {
 							cube.moveRow(VRow.MIDDLE, Direction.UP);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		            	show(root, 350, 100, cube);
+					}
+				});
+			}
+			if (i == 2) {
+				imageView.setOnMousePressed(new EventHandler<MouseEvent>(){
+					@Override
+					public void handle(MouseEvent event) {
+						try {
+							cube.moveRow(VRow.RIGHT, Direction.UP);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -348,5 +401,6 @@ public class Game {
         images.setTranslateX(x+50);
         images.setTranslateY(y+50);
         root.getChildren().add(images);
+        */
 	}
 }
