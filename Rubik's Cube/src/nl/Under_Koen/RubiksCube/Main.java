@@ -68,7 +68,8 @@ public class Main extends Application {
 	
 	public static enum OptionsTypes {
 		RENDER(0),
-		INVERTEDKEYS(1);
+		INVERTEDKEYS(1),
+		HARDNESS(2);
 		
 		private int line;
 		

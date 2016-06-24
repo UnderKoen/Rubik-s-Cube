@@ -49,9 +49,10 @@ public class Cube {
 	 * move so that all side are good
 	 * set ids to to the cubes ids2
 	 */
-	/*private HashMap<View, HashMap<Integer, Color>> getRowRotatedIds (ArrayList<Integer> listIds, ArrayList<View> listViews) {
+	private HashMap<View, HashMap<Integer, Color>> getRowRotatedIds (ArrayList<Integer> listIds, ArrayList<View> listViews) {
 		Cube testCube = new Cube();
 		testCube.setIds(ids2);
+		//testCube.setView(view);
 		HashMap<View, HashMap<Integer, Color>> oldIds = testCube.ids;
 		HashMap<View, HashMap<Integer, Color>> newIds = oldIds;
 		ArrayList<Color> rowBefore = null;
@@ -71,10 +72,10 @@ public class Cube {
 					i2++;
 				}
 			}
+			first = false;
 			testCube.setIds(newIds);
 			switch (rotations.get(v)) {
 			case EAST:
-				testCube.addRotation(v, Direction.RIGHT, false);
 				testCube.addRotation(v, Direction.RIGHT, false);
 				break;
 			case NORTH:
@@ -89,15 +90,13 @@ public class Cube {
 				testCube.addRotation(v, Direction.RIGHT, false);
 				break;
 			}
-			first = false;
 		}
-		return testCube.ids;
+		return testCube.ids2;
 	}
 	
 	/**
 	 * @throws Exception if dir is not relative with the row
 	 */
-	/*
 	public void moveRow(Row row, Direction dir) throws Exception {
 		ArrayList<Integer> listIds = new ArrayList<Integer>();
 		ArrayList<View> listViews = new ArrayList<View>();
@@ -170,13 +169,11 @@ public class Cube {
 				break;
 			}
 		}
-		HashMap<View, HashMap<Integer, Color>> newIds = getRowRotatedIds(listIds, listViews);
-		setIds(newIds);
-		//addRotation(rotView, viewRot, false);
+		setIds(getRowRotatedIds(listIds, listViews));
+		addRotation(rotView, viewRot, false);
 		//TODO ^
 		move(Direction.NONE);
 	}
-	*/
 	
 	public void toDefault() {
 		ids.clear();

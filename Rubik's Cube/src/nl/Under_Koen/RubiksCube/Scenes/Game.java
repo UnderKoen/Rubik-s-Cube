@@ -1,6 +1,7 @@
 package nl.Under_Koen.RubiksCube.Scenes;
 
 import java.io.File;
+import java.util.Random;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,6 +20,7 @@ import javafx.stage.FileChooser;
 import nl.Under_Koen.RubiksCube.HomeMenu;
 import nl.Under_Koen.RubiksCube.Main;
 import nl.Under_Koen.RubiksCube.Cube.Cube;
+import nl.Under_Koen.RubiksCube.Cube.Row.Row;
 import nl.Under_Koen.RubiksCube.Cube.Row.Row.HRow;
 import nl.Under_Koen.RubiksCube.Cube.Row.Row.VRow;
 import nl.Under_Koen.RubiksCube.Cube.View.Direction;
@@ -92,6 +94,15 @@ public class Game {
                 }
             }
         });
+        menu.addButton("Random", new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+        		int harness = Integer.parseInt(Main.getOption(OptionsTypes.HARDNESS));
+            	random(cube, harness);
+            	show(root, 350, 100, cube);
+            	cube.saveSave(currenctFile);
+            }
+        });
         menu.addButton("Load", new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -138,6 +149,60 @@ public class Game {
         menu.show(root);
         show(root, 350, 100, cube);	
 		return main;
+	}
+	
+	private static void random(Cube cube, int hardness) {
+		for (int i = 0; hardness != i ;i++) {
+			int random = new Random().nextInt(6);
+			Row row = null;
+			switch (random) {
+			case 0:
+				row = HRow.TOP;
+				break;
+			case 1:
+				row = HRow.MIDDLE;
+				break;
+			case 2:
+				row = HRow.BOTTOM;
+				break;
+			case 3:
+				row = VRow.LEFT;
+				break;
+			case 4:
+				row = VRow.MIDDLE;
+				break;
+			case 5:
+				row = VRow.RIGHT;
+				break;
+			}
+			int random2 = new Random().nextInt(2);
+			Direction dir = null;
+			if (row instanceof HRow) {
+				switch (random2) {
+				case 0:
+					dir = Direction.LEFT;
+					break;
+				case 1:
+					dir = Direction.RIGHT;
+					break;
+				}
+			}
+			if (row instanceof VRow) {
+				switch (random2) {
+				case 0:
+					dir = Direction.UP;
+					break;
+				case 1:
+					dir = Direction.DOWN;
+					break;
+				}
+			}
+			try {
+				cube.moveRow(row, dir);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private static void save(Cube cube) {
@@ -190,7 +255,6 @@ public class Game {
 		}
 		root.getChildren().remove(images);
 		images = new Group();
-		/*
         for (int i = 0; i != 3; i++) {
 		    Image image = new Image (Main.class.getResource("/Arrows/Arrow_Right.png").toString());
 			ImageView imageView = new ImageView(image);
@@ -401,6 +465,5 @@ public class Game {
         images.setTranslateX(x+50);
         images.setTranslateY(y+50);
         root.getChildren().add(images);
-        */
 	}
 }

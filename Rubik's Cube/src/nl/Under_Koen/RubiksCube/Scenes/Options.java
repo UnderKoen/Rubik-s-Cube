@@ -10,6 +10,8 @@ import nl.Under_Koen.RubiksCube.Main;
 import nl.Under_Koen.RubiksCube.Main.OptionsTypes;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 public class Options {
 	
@@ -84,6 +86,33 @@ public class Options {
             }
         });
         root.getChildren().addAll(inverted, nInverted);
+        
+        TextField harness = new TextField(Main.getOption(OptionsTypes.HARDNESS));
+        root.getChildren().add(harness);
+        harness.setTranslateX(170);
+        harness.setTranslateY(120);
+        harness.setMaxWidth(100);
+        
+        Button harnessSubmit = new Button("Submit");
+        root.getChildren().add(harnessSubmit);
+        harnessSubmit.setTranslateX(270);
+        harnessSubmit.setTranslateY(120);
+        harnessSubmit.setMaxWidth(100);
+        harnessSubmit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	try {
+            		int i = Integer.parseInt(harness.getText());
+            		if (i < 1000) {
+            			Main.setOption(OptionsTypes.HARDNESS, harness.getText());
+            		} else {
+            			throw new Exception();
+            		}
+            	} catch (Exception e) {
+            		harness.setText(Main.getOption(OptionsTypes.HARDNESS));
+				}
+            }
+        });
         
         Scene main = new Scene(root);
         root.setAlignment(Pos.TOP_LEFT);
